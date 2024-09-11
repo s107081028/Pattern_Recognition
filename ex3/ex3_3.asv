@@ -1,0 +1,40 @@
+% 111061702 ex3_3
+rng(0, 'v4');  %random seed
+%% a.
+%train_data = readtable('mnist_train.csv');
+%test_data = readtable('mnist_test.csv');
+
+X_train = table2array(train_data);
+digit = 3;
+indices = find(X_train(:,1) == digit);
+N = 2000;
+sampled_indices = randsample(indices, N);
+
+% Create data matrix X
+X = double(X_train(sampled_indices, 2:end));
+Y = X_train(sampled_indices, 1);
+mux = mean(X);
+X = X - repmat(mux, N, 1);
+
+%% b. 
+% Compute covariance matrix of X
+C = cov(X);
+
+% Compute eigenvectors and eigenvalues of covariance matrix
+[V, D] = eig(C);
+
+% Sort eigenvectors in descending order of eigenvalues
+[eigenvalues, indices] = sort(diag(D), 'descend');
+coeff = V(:, indices);
+
+%%
+test_image = zeros(28, 28);
+for i = 1:28
+    test_image(i, :) = mux(i*28-28:i*28);
+end
+
+figure;
+scatter(X1(:,1), X1(:,2), 'r');
+hold on;
+scatter(X2(:,1), X2(:,2), 'b');
+xlabel('X_1'); ylabel('X_2'); title('2-Class');
